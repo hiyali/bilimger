@@ -1,9 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/hiyali/bilimger/lib"
 )
 
 const (
@@ -11,15 +11,12 @@ const (
 )
 
 func main() {
-
-	env := flag.String("env", "dev", "Environment")
-	flag.Parse()
-
-	if *env == "prod" {
+	lib.InitialEnvironment()
+	if lib.GetEnv() == "prod" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	engine := gin.Default()
 
+	engine := gin.Default()
 	RegisterRouter(engine)
 
 	engine.Run(fmt.Sprintf("0.0.0.0:%d", port))

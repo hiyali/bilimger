@@ -2,13 +2,20 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hiyali/bilimger/handler"
+	"github.com/hiyali/bilimger/handler/article"
+	"github.com/hiyali/bilimger/handler/user"
 )
 
-var ApiPath = "/api"
+const (
+	ApiPath = "/api"
+)
 
 func RegisterRouter(router *gin.Engine) {
-	group := router.Group(ApiPath + "/user")
-	restful := handler.GetRestful()
-	restful.Apply(group)
+	// user
+	user.RegisterRouter(router, ApiPath)
+
+	// article
+	article.RegisterRouter(router, ApiPath)
+
+	// other
 }
