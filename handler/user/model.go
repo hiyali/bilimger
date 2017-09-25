@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -14,17 +13,16 @@ type Model struct {
 	LevelId       string
 }
 
+/*
 func (Model) TableName() string {
-	fmt.Println("----------------------------------sadfasdfasdfa")
 	return Name
 }
 
-/*
 func (u User) TableName() string {
 	if u.Role == "admin" {
-		return "admin_users"
+		return "admin_" + Name
 	} else {
-		return "users"
+		return Name
 	}
 }
 */

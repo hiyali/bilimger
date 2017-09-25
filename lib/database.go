@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"database/sql"
+	// "database/sql"
 	"fmt"
 	// _ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -17,10 +17,9 @@ func GetDB() *gorm.DB {
 		fmt.Printf("error %v\n", err)
 		panic("failed to connect database")
 	}
-	defer db.Close()
 
 	// Disable table name's pluralization globally
-	// db.SingularTable(true) // if set this to true, `User`'s default table name will be `user`, table name setted with `TableName` won't be affected
+	db.SingularTable(true) // if set this to true, `User`'s default table name will be `user`, table name setted with `TableName` won't be affected
 
 	return db
 }
@@ -31,6 +30,7 @@ func GetTable(tableName string) *gorm.DB {
 	return db
 }
 
+/*
 func ExcuteSql(sqlString string) *sql.DB {
 	db, err := sql.Open("mysql", "bilimger:bilimger@/bilimger")
 	if err != nil {
@@ -63,3 +63,4 @@ func ExcuteSql(sqlString string) *sql.DB {
 
 	return db
 }
+*/

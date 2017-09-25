@@ -1,10 +1,9 @@
-package article
+package user
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hiyali/bilimger/lib"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"strconv"
 )
@@ -14,10 +13,11 @@ func Create(c *gin.Context) {
 		Name: c.PostForm("name"),
 	}
 
-	db := lib.GetTable(Name)
+	db := lib.GetDB()
+	defer db.Close()
 	db.Save(&item)
 
-	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": "Todo item created successfully!", "id": item.ID})
+	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": fmt.Sprintf("%v item created successfully!", Name), "id": item.ID})
 }
 
 func AllOrPaginate(c *gin.Context) {
@@ -28,7 +28,8 @@ func AllOrPaginate(c *gin.Context) {
 
 	sort := c.Query("sort") // age desc, name   ===    age desc, name asc
 
-	db := lib.GetTable(Name)
+	db := lib.GetDB()
+	defer db.Close()
 	db = db.Order(sort)
 
 	if c.Query("all") == "" {
@@ -38,7 +39,7 @@ func AllOrPaginate(c *gin.Context) {
 		if sizeOk != nil {
 			size = 10
 			if sizeStr != "" {
-				fmt.Println(Name + "AllOrPaginate handler size not a integer")
+				fmt.Println(Name + " AllOrPaginate handler size not a integer")
 			}
 		}
 
@@ -48,7 +49,7 @@ func AllOrPaginate(c *gin.Context) {
 	}
 
 	if len(_items) <= 0 {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": fmt.Sprintf("No %v found!", Name)})
 		return
 	}
 
@@ -64,19 +65,25 @@ func Ping(c *gin.Context) {
 }
 
 func Show(c *gin.Context) {
-	var item gorm.Model
+	var item Model
 	itemId := c.Param("id") // :id
+	fmt.Printf("getting item in [%v] for id [%v] \n", Name, itemId)
 
 	if lib.GetEnv() == "test" && itemId == "ping" {
 		Ping(c)
 		return
 	}
 
-	db := lib.GetTable(Name)
+	db := lib.GetDB()
+	defer db.Close()
 	db.First(&item, itemId)
+	// db.Unscoped().Table("items").Where("id = " + itemId).Find(&item)
+	// db.Unscoped().Table(Name).Where("id = " + itemId).Find(&item)
+	// fmt.Printf("table [%v] is %v\n", Name, db.HasTable(Name))
+	// db.Table(Name).Where(Model{ID: 1}).First(&item)
 
 	if item.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": fmt.Sprintf("No %v found!", Name)})
 		return
 	}
 
@@ -84,35 +91,37 @@ func Show(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
-	var item gorm.Model
+	var item Model
 	itemId := c.Param("id")
 
-	db := lib.GetTable(Name)
+	db := lib.GetDB()
+	defer db.Close()
 	db.First(&item, itemId)
 
 	if item.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": fmt.Sprintf("No %v found!", Name)})
 		return
 	}
 
 	db.Save(&item)
 
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Todo updated successfully!"})
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": fmt.Sprintf("%v updated successfully!", Name)})
 }
 
 func Delete(c *gin.Context) {
-	var item gorm.Model
+	var item Model
 	itemId := c.Param("id")
 
-	db := lib.GetTable(Name)
+	db := lib.GetDB()
+	defer db.Close()
 	db.First(&item, itemId)
 
 	if item.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No todo found!"})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": fmt.Sprintf("No %v found!", Name)})
 		return
 	}
 
 	db.Delete(&item)
 
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": "Todo deleted successfully!"})
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "message": fmt.Sprintf("%v deleted successfully!", Name)})
 }

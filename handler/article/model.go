@@ -10,16 +10,16 @@ type Model struct {
 	Password string `json:"password"`
 }
 
+/*
 func (Model) TableName() string {
 	return Name
 }
 
-/*
 func (u User) TableName() string {
 	if u.Role == "admin" {
-		return "admin_users"
+		return "admin_" + Name
 	} else {
-		return "users"
+		return Name
 	}
 }
 */
