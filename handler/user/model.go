@@ -10,14 +10,14 @@ type Model struct {
 	Password      string
 	Email         string
 	RememberToken string
-	LevelId       string
+	LevelId       int
 }
 
-/*
 func (Model) TableName() string {
 	return Name
 }
 
+/*
 func (u User) TableName() string {
 	if u.Role == "admin" {
 		return "admin_" + Name

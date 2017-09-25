@@ -13,10 +13,7 @@ const (
 )
 
 func RegisterRouter(engine *gin.Engine) {
-	// user
 	user.RegisterRouter(engine, ApiPath)
-
-	// article
 	article.RegisterRouter(engine, ApiPath)
 
 	// other

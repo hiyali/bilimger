@@ -77,6 +77,7 @@ func Show(c *gin.Context) {
 	db := lib.GetDB()
 	defer db.Close()
 	db.First(&item, itemId)
+	// db.First(&product, "code = ?", "L1212") // find product with code l1212
 	// db.Unscoped().Table("items").Where("id = " + itemId).Find(&item)
 	// db.Unscoped().Table(Name).Where("id = " + itemId).Find(&item)
 	// fmt.Printf("table [%v] is %v\n", Name, db.HasTable(Name))
